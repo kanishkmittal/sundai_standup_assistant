@@ -1,7 +1,7 @@
 # Kanishk — Teams & GitHub Connectors
 
 **Branch:** `feature/teams-github-connectors`
-**Files I own:** `backend/connectors/teams.py`, `backend/connectors/github_connector.py`
+**Folder:** `kanishk/`
 
 ## Status
 
@@ -71,7 +71,7 @@ Both connectors expose:
 ```python
 async def fetch(config: dict) -> list[ConnectorRecord]
 ```
-Deepika's orchestrator will call this with a config dict containing relevant keys from `.env`.
+Deepika's orchestrator will import `kanishk.teams` and `kanishk.github_connector` and call `fetch()`.
 
 ## Notes / Log
 _Update this section as you work — what you tried, what worked, what didn't._

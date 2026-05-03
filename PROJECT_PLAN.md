@@ -14,63 +14,73 @@ A web app that generates daily standup updates by pulling context from Microsoft
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   React Frontend                     │
-│              (TypeScript / Vite)                      │
-│         /frontend                                    │
+│              React Frontend (Anusha)                  │
+│              anusha/frontend/                         │
 └──────────────────────┬──────────────────────────────┘
                        │ REST API
 ┌──────────────────────▼──────────────────────────────┐
-│                 FastAPI Backend                       │
-│              /backend/app.py                          │
-│                                                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────┐       │
-│  │  Teams   │  │  GitHub  │  │    Jira      │       │
-│  │ Connector│  │ Connector│  │  Connector   │       │
-│  └──────────┘  └──────────┘  └──────────────┘       │
-│       │              │              │                 │
-│       └──────────────┼──────────────┘                │
-│                      ▼                               │
-│              Orchestrator                            │
-│          /backend/orchestrator.py                     │
+│              FastAPI Routes (Anusha)                  │
+│              anusha/app.py                            │
 │                      │                               │
 │                      ▼                               │
-│              Claude API (Prompt)                      │
-│          /backend/prompt.py                           │
+│         Orchestrator + Prompt (Deepika)               │
+│         deepika/orchestrator.py + prompt.py           │
+│                      │                               │
+│       ┌──────────────┼──────────────┐                │
+│       ▼              ▼              ▼                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────┐       │
+│  │  Teams   │  │  GitHub  │  │    Jira      │       │
+│  │(Kanishk) │  │(Kanishk) │  │  (Deepika)   │       │
+│  └──────────┘  └──────────┘  └──────────────┘       │
 └──────────────────────────────────────────────────────┘
 ```
 
 ## Directory Structure (Disjoint Workstreams)
 
+Each person owns their own top-level folder. No file overlap. No merge conflicts.
+
 ```
 sundai_standup_assistant/
-├── backend/
-│   ├── connectors/
-│   │   ├── __init__.py          ← shared interface
-│   │   ├── teams.py             ← Person A
-│   │   ├── github_connector.py  ← Person A
-│   │   └── jira_connector.py    ← Person B
-│   ├── orchestrator.py          ← Person B
-│   ├── prompt.py                ← Person B
-│   ├── app.py                   ← Person C (thin FastAPI routes)
-│   └── requirements.txt
-├── frontend/                    ← Person C (entire directory)
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── components/
-│   │   └── api.ts
-│   ├── package.json
-│   └── vite.config.ts
+├── shared/                          ← agreed upfront, then frozen
+│   ├── __init__.py                  ← ConnectorRecord dataclass
+│   └── types.ts                     ← TypeScript request/response types
+│
+├── kanishk/                         ← Kanishk's folder (Teams + GitHub)
+│   ├── __init__.py
+│   ├── teams.py
+│   ├── github_connector.py
+│   ├── requirements.txt
+│   └── PLAN_KANISHK.md
+│
+├── deepika/                         ← Deepika's folder (Jira + orchestrator + prompt)
+│   ├── __init__.py
+│   ├── jira_connector.py
+│   ├── orchestrator.py
+│   ├── prompt.py
+│   ├── requirements.txt
+│   └── PLAN_DEEPIKA.md
+│
+├── anusha/                          ← Anusha's folder (frontend + API routes)
+│   ├── __init__.py
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── PLAN_ANUSHA.md
+│   └── frontend/
+│       └── src/
+│           ├── App.tsx
+│           ├── api.ts
+│           └── components/
+│
 ├── .env.example
+├── .gitignore
 ├── PROJECT_PLAN.md
-├── LICENSE
-└── README.md
+└── LICENSE
 ```
 
 ## Team Assignments
 
-### Kanishk (Person A) — Backend / APIs
-**Branch:** `feature/teams-github-connectors` | **Plan:** `backend/connectors/PLAN_KANISHK.md`
-**Files:** `backend/connectors/teams.py`, `backend/connectors/github_connector.py`
+### Kanishk — Backend / APIs
+**Branch:** `feature/teams-github-connectors` | **Folder:** `kanishk/` | **Plan:** `kanishk/PLAN_KANISHK.md`
 
 Owns the Teams and GitHub connectors. These are the two integrations most likely to hit auth/permission snags, so they go to the strongest API person.
 
@@ -88,13 +98,12 @@ Owns the Teams and GitHub connectors. These are the two integrations most likely
 
 **Shared interface** — both connectors expose:
 ```python
-async def fetch(config: dict) -> list[dict]:
+async def fetch(config: dict) -> list[ConnectorRecord]:
     """Returns normalized records with: source, timestamp, summary, raw_data"""
 ```
 
-### Deepika (Person B) — Product / Orchestration
-**Branch:** `feature/jira-orchestrator-prompt` | **Plan:** `backend/PLAN_DEEPIKA.md`
-**Files:** `backend/connectors/jira_connector.py`, `backend/orchestrator.py`, `backend/prompt.py`
+### Deepika — Product / Orchestration
+**Branch:** `feature/jira-orchestrator-prompt` | **Folder:** `deepika/` | **Plan:** `deepika/PLAN_DEEPIKA.md`
 
 Owns Jira integration, the orchestration layer that calls all connectors, and the Claude prompt.
 
@@ -121,19 +130,18 @@ Owns Jira integration, the orchestration layer that calls all connectors, and th
 - Use `anthropic` Python SDK, model: `claude-sonnet-4-6-20250514`
 - Return the standup as markdown text
 
-### Anusha (Person C) — Frontend
-**Branch:** `feature/frontend-api` | **Plan:** `frontend/PLAN_ANUSHA.md`
-**Files:** `frontend/` (entire directory), `backend/app.py`
+### Anusha — Frontend
+**Branch:** `feature/frontend-api` | **Folder:** `anusha/` | **Plan:** `anusha/PLAN_ANUSHA.md`
 
 Owns the web interface and the thin FastAPI layer that serves it.
 
-**FastAPI Routes (`backend/app.py`)**
+**FastAPI Routes (`anusha/app.py`)**
 - `POST /api/generate` — accepts config (repos, Jira project, Teams chat ID), calls orchestrator, returns standup markdown
 - `GET /api/health` — health check
 - Serves the built frontend as static files in production
 - CORS middleware for local dev
 
-**React Frontend (`frontend/`)**
+**React Frontend (`anusha/frontend/`)**
 - Single-page app with:
   - Config form: GitHub repos, Jira project key, Teams chat ID
   - "Generate Standup" button
@@ -147,10 +155,7 @@ Owns the web interface and the thin FastAPI layer that serves it.
 All three people should agree on these types upfront (first 15 minutes):
 
 ```python
-# backend/connectors/__init__.py
-
-from dataclasses import dataclass
-from datetime import datetime
+# shared/__init__.py — Python interface (used by kanishk/ and deepika/)
 
 @dataclass
 class ConnectorRecord:
@@ -162,7 +167,7 @@ class ConnectorRecord:
 ```
 
 ```typescript
-// frontend/src/api.ts
+// shared/types.ts — TypeScript interface (used by anusha/frontend/)
 
 interface GenerateRequest {
   github_repos: string[];

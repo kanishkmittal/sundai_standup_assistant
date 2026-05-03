@@ -1,7 +1,7 @@
 # Anusha — Frontend & FastAPI Routes
 
 **Branch:** `feature/frontend-api`
-**Files I own:** `frontend/` (entire directory), `backend/app.py`
+**Folder:** `anusha/`
 
 ## Status
 
@@ -12,16 +12,16 @@
 | Generate button + loading state | Not started | |
 | Standup output panel (markdown) | Not started | |
 | Edit/copy controls | Not started | |
-| FastAPI routes | Not started | |
+| FastAPI routes (`app.py`) | Not started | |
 | CORS + static file serving | Not started | |
 | Wire frontend to backend | Not started | Needs Deepika's orchestrator |
 
-## FastAPI Routes — `backend/app.py`
+## FastAPI Routes — `app.py`
 
 ### Endpoints
 ```
 POST /api/generate
-  Body: GenerateRequest (see api.ts types)
+  Body: GenerateRequest
   Response: StandupResponse { standup_markdown, sources_used, generated_at }
 
 GET /api/health
@@ -30,11 +30,11 @@ GET /api/health
 
 ### Setup
 - `FastAPI()` with CORS middleware (allow `localhost:5173` for Vite dev server)
-- `python-dotenv` to load `.env`
-- Call `orchestrator.generate_standup(config)` and wrap result
-- In production, serve `frontend/dist/` as static files via `StaticFiles`
+- `python-dotenv` to load `.env` from project root
+- Call `deepika.orchestrator.generate_standup(config)` and wrap result
+- In production, serve `anusha/frontend/dist/` as static files via `StaticFiles`
 
-## React Frontend — `frontend/`
+## React Frontend — `anusha/frontend/`
 
 ### Scaffold
 - Vite + React + TypeScript
@@ -64,8 +64,8 @@ Single page with three sections:
 - "Regenerate" button
 - Timestamp of when it was generated
 
-### API Client (`src/api.ts`)
-Already scaffolded with types. Just needs the base URL config:
+### API Client (`frontend/src/api.ts`)
+Already scaffolded. Imports shared types from `shared/types.ts`.
 - Dev: `http://localhost:8000`
 - Prod: relative `/api/...`
 
@@ -75,22 +75,21 @@ Already scaffolded with types. Just needs the base URL config:
 - Mobile-responsive not required for hackathon demo
 
 ## Dependencies
-- `react-markdown` for rendering standup output
-- `tailwindcss` for styling
-- `vite` + `@vitejs/plugin-react` for build
 
-### package.json deps (to install)
-```
-react react-dom
-react-markdown
-tailwindcss @tailwindcss/vite
-```
+### Python (`requirements.txt`)
+- `fastapi`, `uvicorn`, `python-dotenv`
+
+### Frontend (to install via npm/bun)
+- `react`, `react-dom`
+- `react-markdown`
+- `tailwindcss`, `@tailwindcss/vite`
+- `vite`, `@vitejs/plugin-react`
 
 ## Integration Contract
 - Frontend calls `POST /api/generate` with `GenerateRequest`
 - Backend returns `StandupResponse`
-- Types are defined in `frontend/src/api.ts`
-- Deepika's orchestrator is called inside `app.py` — Anusha just needs to import and call it
+- Types defined in `shared/types.ts` (frontend) and `shared/__init__.py` (backend)
+- `app.py` imports and calls `deepika.orchestrator.generate_standup(config)`
 
 ## Notes / Log
 _Update this section as you work — what you tried, what worked, what didn't._

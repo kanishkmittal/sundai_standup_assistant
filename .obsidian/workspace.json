@@ -185,18 +185,21 @@
   },
   "active": "abbeef47ab59f877",
   "lastOpenFiles": [
+    "anusha/PLAN_ANUSHA.md",
+    "anusha/frontend/src/components",
+    "anusha/frontend/src/App.tsx",
+    "anusha/frontend/src/api.ts",
+    "anusha/frontend/src",
+    "anusha/requirements.txt",
+    "anusha/frontend",
+    "anusha/app.py",
+    "anusha/__init__.py",
+    "anusha",
+    "deepika/requirements.txt",
+    "deepika/PLAN_DEEPIKA.md",
+    "kanishk/PLAN_KANISHK.md",
     "frontend/PLAN_ANUSHA.md",
     "backend/PLAN_DEEPIKA.md",
-    "backend/connectors/PLAN_KANISHK.md",
-    "frontend/src/components",
-    "frontend/src/api.ts",
-    "frontend/src/App.tsx",
-    "frontend/src",
-    "frontend",
-    "backend/__init__.py",
-    "backend/requirements.txt",
-    "backend/connectors/teams.py",
-    "backend/connectors/jira_connector.py",
-    "backend/connectors/github_connector.py"
+    "backend/connectors/PLAN_KANISHK.md"
   ]
 }

@@ -1,6 +1,7 @@
-# Deepika — Claude API prompt construction and standup generation
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from connectors import ConnectorRecord
+from shared import ConnectorRecord
 
 
 async def generate(records: list[ConnectorRecord]) -> str:

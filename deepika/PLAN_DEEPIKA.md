@@ -1,7 +1,7 @@
 # Deepika — Jira Connector, Orchestrator & Prompt
 
 **Branch:** `feature/jira-orchestrator-prompt`
-**Files I own:** `backend/connectors/jira_connector.py`, `backend/orchestrator.py`, `backend/prompt.py`
+**Folder:** `deepika/`
 
 ## Status
 
@@ -53,9 +53,9 @@ Return `list[ConnectorRecord]` where each record is one of:
 async def generate_standup(config: dict) -> str:
     # 1. Call all connectors in parallel
     teams_records, github_records, jira_records = await asyncio.gather(
-        teams.fetch(config),
-        github_connector.fetch(config),
-        jira_connector.fetch(config),
+        kanishk.teams.fetch(config),
+        kanishk.github_connector.fetch(config),
+        deepika.jira_connector.fetch(config),
     )
 
     # 2. Merge and sort by timestamp
@@ -65,7 +65,7 @@ async def generate_standup(config: dict) -> str:
     )
 
     # 3. Generate standup
-    return await prompt.generate(all_records)
+    return await deepika.prompt.generate(all_records)
 ```
 
 ### Error Handling
@@ -112,9 +112,9 @@ Serialize all `ConnectorRecord` objects as a JSON array and pass as the user mes
 - `python-dotenv` for env vars
 
 ## Integration Contract
-- Orchestrator imports `connectors.teams`, `connectors.github_connector`, `connectors.jira_connector`
-- Each exposes `async def fetch(config: dict) -> list[ConnectorRecord]`
-- Anusha's `app.py` calls `orchestrator.generate_standup(config)` and returns the result
+- Orchestrator imports `kanishk.teams`, `kanishk.github_connector`, `deepika.jira_connector`
+- Each connector exposes `async def fetch(config: dict) -> list[ConnectorRecord]`
+- Anusha's `app.py` in `anusha/` calls `deepika.orchestrator.generate_standup(config)`
 
 ## Notes / Log
 _Update this section as you work — what you tried, what worked, what didn't._
