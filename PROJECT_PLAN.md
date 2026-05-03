@@ -68,7 +68,8 @@ sundai_standup_assistant/
 
 ## Team Assignments
 
-### Person A — Backend / APIs
+### Kanishk (Person A) — Backend / APIs
+**Branch:** `feature/teams-github-connectors` | **Plan:** `backend/connectors/PLAN_KANISHK.md`
 **Files:** `backend/connectors/teams.py`, `backend/connectors/github_connector.py`
 
 Owns the Teams and GitHub connectors. These are the two integrations most likely to hit auth/permission snags, so they go to the strongest API person.
@@ -91,7 +92,8 @@ async def fetch(config: dict) -> list[dict]:
     """Returns normalized records with: source, timestamp, summary, raw_data"""
 ```
 
-### Person B — Product / Orchestration
+### Deepika (Person B) — Product / Orchestration
+**Branch:** `feature/jira-orchestrator-prompt` | **Plan:** `backend/PLAN_DEEPIKA.md`
 **Files:** `backend/connectors/jira_connector.py`, `backend/orchestrator.py`, `backend/prompt.py`
 
 Owns Jira integration, the orchestration layer that calls all connectors, and the Claude prompt.
@@ -119,7 +121,8 @@ Owns Jira integration, the orchestration layer that calls all connectors, and th
 - Use `anthropic` Python SDK, model: `claude-sonnet-4-6-20250514`
 - Return the standup as markdown text
 
-### Person C — Frontend
+### Anusha (Person C) — Frontend
+**Branch:** `feature/frontend-api` | **Plan:** `frontend/PLAN_ANUSHA.md`
 **Files:** `frontend/` (entire directory), `backend/app.py`
 
 Owns the web interface and the thin FastAPI layer that serves it.
@@ -178,8 +181,8 @@ interface StandupResponse {
 
 ## Timeline (3-4 hours)
 
-| Time | Phase | Everyone | Person A | Person B | Person C |
-|------|-------|----------|----------|----------|----------|
+| Time | Phase | Everyone | Kanishk | Deepika | Anusha |
+|------|-------|----------|---------|---------|--------|
 | 0:00-0:15 | Setup | Agree on interfaces, set up .env, install deps | — | — | — |
 | 0:15-0:30 | Scaffold | — | Scaffold connectors/ | Scaffold orchestrator + prompt | Scaffold FastAPI + Vite app |
 | 0:30-1:30 | Build | — | Teams + GitHub connectors | Jira connector + orchestrator | Frontend UI + API routes |
@@ -222,8 +225,8 @@ The user's organization may not grant Microsoft Graph API permissions for chat a
 ## Git Workflow
 
 Each person works on their own branch to avoid merge conflicts:
-- `feature/teams-github-connectors` — Person A
-- `feature/jira-orchestrator-prompt` — Person B
-- `feature/frontend-api` — Person C
+- `feature/teams-github-connectors` — Kanishk
+- `feature/jira-orchestrator-prompt` — Deepika
+- `feature/frontend-api` — Anusha
 
 Since directory ownership is disjoint, merges to `main` should be conflict-free. Integrate after the Build phase (~1.5 hours in).
